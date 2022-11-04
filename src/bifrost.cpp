@@ -1,11 +1,11 @@
 #include <fmt/format.h>
-#include <greeter/greeter.h>
+#include <bifrost/bifrost.h>
 
-using namespace greeter;
+using namespace bifrost;
 
-Greeter::Greeter(std::string _name) : name(std::move(_name)) {}
+Bifrost::Bifrost(std::string _name) : name(std::move(_name)) {}
 
-std::string Greeter::greet(LanguageCode lang) const {
+std::string Bifrost::greet(LanguageCode lang) const {
   switch (lang) {
     default:
     case LanguageCode::EN:
