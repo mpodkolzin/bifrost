@@ -1,22 +1,27 @@
 #pragma once
 
-#include <string>
+#include <memory>
 #include <vector>
-#include "file_handle.h"
-#include <unordered_map>
-
-
+#include "io/shard_manager.h"
+#include "io/file_handle.h"
 
 class FileManager {
 public:
-    FileManager(const std::string& basePath);
-    FileHandle openForWrite(uint64_t shardId);
-    FileHandle openForRead(uint64_t shardId, uint64_t offset);
-    void rotateIfNeeded(uint64_t shardId);
-    void deleteOldSegments(uint64_t shardId, uint64_t upToOffset);
-    ~FileManager();
+    explicit FileManager(const std::string& baseDirectory);
+
+    // Get handle to a specific shard (pass-through to ShardManager)
+    std::shared_ptr<FileHandle> getHandleForShard(int shardId);
+
+    // Get the current active shard for writing (e.g., latest)
+    std::shared_ptr<FileHandle> getActiveWriteHandle();
+
+    // Get a list of all active/open handles
+    std::vector<std::shared_ptr<FileHandle>> listAllHandles() const;
+
+    // Advance to the next shard (for log rotation)
+    void rotateShard();
 
 private:
-    std::string basePath_;
-    std::unordered_map<uint64_t, std::vector<FileHandle>> shardFiles_;
+    std::unique_ptr<ShardManager> shardManager_;
+    int currentShardId_;
 };
