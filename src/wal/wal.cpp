@@ -4,6 +4,7 @@
 #include "wal/wal.h"
 #include "io/buffered_writer.h"
 #include "io/file_manager.h"
+#include "io/writer_pool.h"
 
 WAL::WAL(std::string path) {
     //path = "./wal.txt";
@@ -11,7 +12,7 @@ WAL::WAL(std::string path) {
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open file: " + path);
     }
-    buffered_writer_ = std::make_unique<BufferedWriter>(10, 4096);
+    writerPool_ = std::make_unique<WriterPool>();
     file_manager_ = std::make_unique<FileManager>(std::string("./"));
 
 }

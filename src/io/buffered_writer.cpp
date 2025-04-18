@@ -6,8 +6,7 @@
 #include <unistd.h>
 #include <stdexcept>
 
-BufferedWriter::BufferedWriter(int fd, size_t bufferLimit) : fd_(fd), bufferLimit_(bufferLimit) {
-    if (fd_ < 0) throw std::runtime_error("Invalid file descriptor");
+BufferedWriter::BufferedWriter(std::shared_ptr<FileHandle> file, size_t bufferLimit) : file_(file), bufferLimit_(bufferLimit) {
 }
 
 BufferedWriter::~BufferedWriter() {
@@ -24,13 +23,13 @@ void BufferedWriter::write(const WALRecord& record) {
 }
 
 void BufferedWriter::flush() {
-    size_t totalWritten = 0;
-    while (totalWritten < buffer_.size()) {
-        ssize_t bytes = ::write(fd_, buffer_.data() + totalWritten, buffer_.size() - totalWritten);
-        if (bytes < 0) throw std::runtime_error("Write failed");
-        totalWritten += bytes;
-    }
-    ::fsync(fd_);  // optional but ensures durability
-    buffer_.clear();
+    //size_t totalWritten = 0;
+    //while (totalWritten < buffer_.size()) {
+    //    ssize_t bytes = ::write(fd_, buffer_.data() + totalWritten, buffer_.size() - totalWritten);
+    //    if (bytes < 0) throw std::runtime_error("Write failed");
+    //    totalWritten += bytes;
+    //}
+    //::fsync(fd_);  // optional but ensures durability
+    //buffer_.clear();
 }
 
