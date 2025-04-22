@@ -13,7 +13,7 @@ WAL::WAL(std::string path) {
         throw std::runtime_error("Failed to open file: " + path);
     }
     writerPool_ = std::make_unique<WriterPool>();
-    file_manager_ = std::make_unique<FileManager>(std::string("./"));
+    file_manager_ = std::make_unique<FileManager>(std::string("./data/wal"));
 
 }
 
@@ -21,9 +21,10 @@ WAL::~WAL() {
     file.close();
 }
 
-void WAL::append(const std::string& data) {
-    file << data << std::endl;
-    std::cout << "Appended data: " << data << std::endl;
+void WAL::append(const WALRecord& record) {
+    auto wal_shard = file_manager_->getActiveWriteHandle();
+    auto writer = writerPool_->getWriterForShard(0, wal_shard);
+    writer->write(record);
 }
 
 void WAL::flush() {

@@ -1,5 +1,5 @@
-#ifndef WAL_RECORD_H
-#define WAL_RECORD_H
+
+#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -25,6 +25,7 @@ public:
 private:
     static uint64_t current_time_millis();
     static uint32_t calculate_checksum(const std::vector<uint8_t>& data);
+    static uint8_t read_u8(const std::vector<uint8_t>& buf, size_t& offset);
+    static uint32_t read_u32(const std::vector<uint8_t>& buf, size_t& offset);
+    static uint64_t read_u64(const std::vector<uint8_t>& buf, size_t& offset);
 };
-
-#endif // WAL_RECORD_H

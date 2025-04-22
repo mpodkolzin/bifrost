@@ -17,7 +17,7 @@ BufferedWriter* WriterPool::getWriterForShard(int shard_id, std::shared_ptr<File
         return it->second.get();
     }
 
-    auto writer = std::make_unique<BufferedWriter>(file, 4096);
+    auto writer = std::make_unique<BufferedWriter>(file, 26);
     BufferedWriter* writerPtr = writer.get();
     writers_[shard_id] = std::move(writer);
     return writerPtr;

@@ -3,7 +3,7 @@
 #include "httplib.h"
 #include "io/file_manager.h"
 #include "io/buffered_writer.h"
-
+#include "wal/wal_record.h"
 
 //int main(int, char**){
 //    std::cout << "Hello, from bifrost!\n";
@@ -17,6 +17,10 @@ void handle_hello(const httplib::Request& req, httplib::Response& res) {
 
 }
 
+std::vector<uint8_t> to_vector(const std::string& str) {
+    return std::vector<uint8_t>(str.begin(), str.end());
+}
+
 
 int main() {
     // Create a server instance
@@ -26,8 +30,9 @@ int main() {
 
     // Define a route handler
     svr.Get("/write", [&wal](const httplib::Request& req, httplib::Response& res) {
+        WALRecord record(RecordType::DATA, to_vector("Hello, world!"));
         res.set_content("Hello, World!", "text/plain");
-        wal.append("Hello, world!");
+        wal.append(record);
         wal.flush();
     });
 
