@@ -4,14 +4,15 @@
 #include <vector>
 #include <fstream>
 #include "wal/wal_record.h"
+#include "io/file_handle.h"
 
 class WALReader {
 public:
-    explicit WALReader(const std::string& file_path, size_t chunk_size = 4096);
+    explicit WALReader(std::shared_ptr<FileHandle> file, size_t chunk_size = 4096);
     bool next(WALRecord& out_record);
 
 private:
-    std::ifstream file;
+    std::shared_ptr<FileHandle> file;
     std::vector<uint8_t> buffer;
     size_t buffer_offset;
     size_t valid_bytes;
